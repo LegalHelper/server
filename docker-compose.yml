@@ -1,0 +1,18 @@
+version: '3.7'
+
+services:
+  legalhelper_postgres:
+    image: postgres:12.1
+    restart: always
+
+  legalhelper:
+    build: .
+    command: bash -l -c './scriptsAfterDockerRun.sh'
+    volumes:
+      - ./:/usr/src/app
+    ports:
+      - "3000:3000"
+    links:
+      - legalhelper_postgres
+    environment:
+      RAILS_ENV: development
