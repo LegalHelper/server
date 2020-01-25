@@ -17,7 +17,7 @@ ActiveRecord::Schema.define(version: 2020_01_25_144348) do
 
   create_table "instructions", force: :cascade do |t|
     t.string "type"
-    t.boolean "root"
+    t.boolean "root", default: false
     t.string "title"
     t.text "text"
     t.integer "children", default: [], array: true
