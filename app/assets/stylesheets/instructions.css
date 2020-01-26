@@ -6,8 +6,16 @@ div {
   display: flex;
 }
 
+.list{
+  border: 2px solid gray;
+  width: 60%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 .card {
-  border: 2px solid red;
+  border: 1px solid gray;
   width: 30%;
   flex-direction: column;
   align-items: center;
@@ -21,11 +29,12 @@ div {
 }
 
 .top-bar {
-  flex: 1;
   flex-direction: row;
   align-items: center;
   justify-content: space-around;
-  margin: 12px;
+  width: 100%;
+  border: 1px solid gray;
+  padding: 10px 0 10px 0;
 }
 
 .title {
