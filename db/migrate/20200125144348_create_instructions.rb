@@ -1,7 +1,7 @@
 class CreateInstructions < ActiveRecord::Migration[6.0]
   def change
     create_table :instructions do |t|
-      t.string :type
+      t.string :instruct_type
       t.boolean :root, default: false
       t.string :title
       t.text :text

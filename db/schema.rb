@@ -16,7 +16,7 @@ ActiveRecord::Schema.define(version: 2020_01_25_144348) do
   enable_extension "plpgsql"
 
   create_table "instructions", force: :cascade do |t|
-    t.string "type"
+    t.string "instruct_type"
     t.boolean "root", default: false
     t.string "title"
     t.text "text"
