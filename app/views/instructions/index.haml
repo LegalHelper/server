@@ -1,0 +1,19 @@
+-#instructions.html.haml
+
+.card
+  .top-bar
+    %button= link_to 'Создать', new_instruction_path
+  %table.table
+    %tr.row
+      %th id
+      %th Название
+      %th Текст
+      %th Ссылка
+      %th Удалить
+    -@instructions.each do |instruct|
+      %tr.row
+        %th= instruct.id
+        %th= instruct.title
+        %th= instruct.text
+        %th= link_to "Открыть", instruction_path(instruct.id)
+        %th= link_to 'Удалить', instruction_path(instruct.id), :method => 'DELETE'
