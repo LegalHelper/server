@@ -6,24 +6,39 @@ export default class Instruction extends Component {
     instruction: {}
   }
 
-  componentDidMount = async() => {
+  componentDidMount = () => {
     const { match: { params: { id } } } = this.props
-    const url = `/api/instructions/${id}`
-
-    try {
-      const response = await fetch(url)
-      if (response.ok) {
-        const data = await response.json()
-        this.setState({instruction: data})
-      } else {
-        alert('Ошибка HTTP: ' + response.status)
-        this.props.history.push('/instructions')
-      }
-    } catch (err) {
-      console.log(err)
-      this.props.history.push('/instructions')
-    }
+    this.getInstruction(id)
   }
+
+   getInstruction = async(id) => {
+     const url = `/api/instructions/${id}`
+
+     try {
+       const response = await fetch(url)
+       if (response.ok) {
+         const data = await response.json()
+         this.setState({instruction: data})
+       } else {
+         alert('Ошибка HTTP: ' + response.status)
+         this.props.history.push('/instructions')
+       }
+     } catch (err) {
+       console.log(err)
+       this.props.history.push('/instructions')
+     }
+   }
+
+   deleteInstruction = (id) => async() => {
+     const url = `/api/instructions/${id}`
+     const token = document.querySelector('meta[name="csrf-token"]').content;
+     try {
+       const res = await fetch(url, { method: 'DELETE', headers: { "X-CSRF-Token": token } })
+       this.props.history.push('/instructions')
+     } catch(err) {
+       console.log(err)
+     }
+   }
 
   renderInstructionHeader = () => {
     const { instruction } = this.state
@@ -49,7 +64,7 @@ export default class Instruction extends Component {
               </div>
             </div>
             <div className="col-sm-12 col-lg-2">
-              <button type="button" className="btn btn-danger">
+              <button type="button" className="btn btn-danger" onClick={this.deleteInstruction(instruction.id)}>
                 Удалить инструкцию
               </button>
             </div>

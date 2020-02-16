@@ -6,7 +6,11 @@ export default class ListInstructions extends Component {
     instructions: []
   }
 
-  componentDidMount = async() => {
+  componentDidMount = () => {
+    this.getInstructions()
+  }
+
+  getInstructions = async() => {
     const url = '/api/instructions'
     try {
       const response = await fetch(url)
@@ -21,7 +25,6 @@ export default class ListInstructions extends Component {
       console.log(err)
       this.props.history.push("/")
     }
-
   }
 
   renderInstructions = () => {
@@ -60,7 +63,6 @@ export default class ListInstructions extends Component {
   }
 
   render() {
-    console.log('instructions', this.state.instructions)
     return (
       <>
         <section className="jumbotron jumbotron-fluid text-center">
