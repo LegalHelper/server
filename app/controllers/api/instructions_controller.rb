@@ -31,6 +31,6 @@ class Api::InstructionsController < ApplicationController
   private
 
   def instruction_params
-    params.permit(:title, :instruction_type, :description, :image, :actions)
+    params[:instruction].permit(:title, :instruction_type, :description, :image, :actions)
   end
 end
