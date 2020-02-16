@@ -10,7 +10,7 @@
   Instruction.create(
     title: "Instruction #{i + 1}",
     description: '227g tub clotted cream, 25g butter, 1 tsp cornflour,100g parmesan, grated nutmeg, 250g fresh fettuccine or tagliatelle, snipped chives or chopped parsley to serve (optional)',
-    instruction_type: 'fast',
+    instruction_type: 'interactive',
     image: 'https://sun9-9.userapi.com/c4384/g37962418/a_86cad53d.jpg?ava=1'
   )
 end

@@ -71,14 +71,15 @@ class CreateInstruction extends React.Component {
               </div>
               <div className="form-group">
                 <label htmlFor="instruction_type">Тип инструкции</label>
-                <input
-                  type="text"
-                  name="instruction_type"
-                  id="instruction_type"
-                  className="form-control"
-                  required
-                  onChange={this.onChangeInstruction}
-                />
+                <select className="form-control"
+                        name="instruction_type"
+                        id="instruction_type"
+                        required
+                        onChange={this.onChangeInstruction}
+                >
+                  <option value="interactive">Интерактивная инструкция</option>
+                  <option value="base_instruction">Базовая инструкция</option>
+                </select>
               </div>
               <div className="form-group">
                 <label htmlFor="instructionImage">Ссылка на картинку к инструкции</label>
