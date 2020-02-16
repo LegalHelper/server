@@ -16,11 +16,10 @@ ActiveRecord::Schema.define(version: 2020_01_25_144348) do
   enable_extension "plpgsql"
 
   create_table "instructions", force: :cascade do |t|
-    t.string "instruct_type"
-    t.boolean "root", default: false
     t.string "title"
-    t.text "text"
-    t.integer "children", default: [], array: true
+    t.string "instruction_type", default: "fast"
+    t.text "description"
+    t.string "image"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
