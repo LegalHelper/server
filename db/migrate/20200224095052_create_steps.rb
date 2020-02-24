@@ -4,8 +4,9 @@ class CreateSteps < ActiveRecord::Migration[6.0]
       t.integer :parent
       t.string :title
       t.text :description,
-      t.string: :image,
+      t.string :image,
       t.integer :children, array: true, default: []
+      t.references :instruction
 
       t.timestamps
     end
