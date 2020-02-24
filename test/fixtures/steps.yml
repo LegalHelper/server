@@ -1,20 +1,15 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  type:
-  : MyString
+  parent: 1234
   title: MyString
-  : MyString
-  text: MyString
-  : MyText
+  description: MyText
   image: MyString
-
+  children: []
 
 two:
-  type:
-  : MyString
+  parent: 2345
   title: MyString
-  : MyString
-  text: MyString
-  : MyText
+  description: MyText
   image: MyString
+  children: []
