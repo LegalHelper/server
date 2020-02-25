@@ -28,9 +28,35 @@ class Api::InstructionsController < ApplicationController
     render json: { message: "Instruction with id #{params[:id]} deleted." }
   end
 
+  def create_step
+    instruction = Instruction.find(params[:id])
+    step = instruction.steps.create! step_params
+    if step.parent
+      parent_step = Step.find(step.parent)
+      parent_step.children.push(step.id)
+      parent_step.save!
+    end
+
+    if step
+      render json: step
+    else
+      render json: step.errors
+    end
+  end
+
+  def update_step
+    instruction = Instruction.find(params[:id])
+    instruction.steps.update! step_params
+    status :ok
+  end
+
   private
 
   def instruction_params
-    params[:instruction].permit(:title, :instruction_type, :description, :image, :actions)
+    params[:instruction].permit(:title, :instruction_type, :description, :image)
+  end
+
+  def step_params
+    params[:step].permit(:parent, :title, :description, :image, :children)
   end
 end
