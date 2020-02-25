@@ -193,7 +193,7 @@ class CreateInstruction extends React.Component {
       <div className='card' key={parent_id} style={styles.block}>
         {Boolean(parent_id) && <h2 className="font-weight-normal mb-1">{this.state.steps[parent_id].title}</h2>}
         {this.state.instruction.id && (
-          <button type='button' className="btn custom-button mt-3" onClick={this.addStep(parent_id)}>
+          <button type='button' className="btn custom-button m-5" onClick={this.addStep(parent_id)}>
             Добавить шаг
           </button>
         )}
@@ -229,14 +229,12 @@ const styles = {
   scroll: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'green'
   },
   block: {
     flex:1,
     selfAlign: 'center',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'red'
   }
 }
 
