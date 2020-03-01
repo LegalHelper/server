@@ -26,8 +26,8 @@ ActiveRecord::Schema.define(version: 2020_02_24_095052) do
 
   create_table "steps", force: :cascade do |t|
     t.integer "parent"
-    t.string "title"
-    t.text "description"
+    t.string "title", default: ""
+    t.text "description", default: ""
     t.string "image"
     t.integer "children", default: [], array: true
     t.bigint "instruction_id"
