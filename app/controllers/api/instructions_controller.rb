@@ -1,4 +1,4 @@
-class Api::InstructionsController < ApplicationController
+class Api::InstructionsController < ApiController
 
   def new
   end
@@ -44,9 +44,19 @@ class Api::InstructionsController < ApplicationController
     end
   end
 
+
   def update_step
-    instruction = Instruction.find(params[:id])
-    instruction.steps.update! step_params
+    step = Step.find(params[:step][:id])
+    step.update! step_params
+
+    if step
+      render json: step
+    else
+      render json: step.errors
+    end
+  end
+
+  def delete_step
     status :ok
   end
 
