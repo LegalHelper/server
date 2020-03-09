@@ -2,8 +2,9 @@ import React from "react"
 import { Link } from "react-router-dom"
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Step from './Step'
-import {responsiveHeight} from '../utils'
+import { responsiveHeight } from '../utils'
 import produce from 'immer'
+import { create_instruction, create_step } from '../api'
 
 class CreateInstruction extends React.Component {
   constructor(props) {
@@ -26,67 +27,34 @@ class CreateInstruction extends React.Component {
 
   onSubmit = async(event) => {
     event.preventDefault()
-    const url = "/api/instructions"
-    const { instruction } = this.state;
-    // if (instruction.title.length == 0 || instruction.length == 0 || instruction.length == 0)
-    //   return;
-    const body = { instruction }
-    const token = document.querySelector('meta[name="csrf-token"]').content
-    try {
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "X-CSRF-Token": token,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(body)
-      })
-      if (res.ok) {
-        const instruction = await res.json()
-        this.setState({...this.state, instruction})
-        //this.props.history.push(`/instructions/${instruction.id}`)
-      } else {
-        console.log('response', res)
-      }
-    } catch (err) {
-      console.log(err.message)
-    }
+    const body = { instruction: this.state.instruction }
+    const instruction = await create_instruction(body)
+    this.setState({...this.state, instruction})
   }
 
   addStep = (parent_id) => async() => {
     event.preventDefault()
-    const url = `/api/instructions/${this.state.instruction.id}/create_step`
-    const token = document.querySelector('meta[name="csrf-token"]').content
-    try {
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "X-CSRF-Token": token,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({step: {parent: parent_id}})
-      })
-      if (res.ok) {
-        const step = await res.json()
-        this.setState(produce(draft => {
-          draft.steps[step.id] = step
-          if (draft.steps[parent_id]) {
-            draft.steps[parent_id].children.push(step.id)
-          }
-          return draft
-        }))
-      } else {
-        console.log('response', res)
+    const body = { step: { parent: parent_id } }
+    const step = await create_step(this.state.instruction.id, body)
+
+    this.setState(produce(draft => {
+      draft.steps[step.id] = step
+      if (draft.steps[parent_id]) {
+        draft.steps[parent_id].children.push(step.id)
       }
-    } catch (err) {
-      console.log(err.message)
-    }
+      return draft
+    }))
   }
 
   renderInstruction = () => {
     return (
-      <div className="card p-2 align-self-center">
-        <h2 className="font-weight-normal mb-5">
+      <div className="card p-2 m-3" style={styles.instructionContainer}>
+        <img
+          src={this.state.instruction.image}
+          className="card-img-top"
+          alt={`${this.state.instruction.title} image`}
+        />
+        <h2 className="font-weight-normal mb-3">
            Описание инструкции:
         </h2>
         <form onSubmit={this.onSubmit}>
@@ -177,12 +145,28 @@ class CreateInstruction extends React.Component {
     return rootSteps.map(id => collect(id, column)).flat(column-1)
   }
 
-// [ {[parent_id]: '', children: [children_ids]}, ...]
-  renderStepsColumn = (deep) => {
-    const steps = this.collectSteps(deep)
+  stepSaveCallback = (step) => {
+    this.setState(produce((draft) => {
+      draft.steps[step.id] = step
+      return draft
+    }))
+  }
+
+  renderSteps = () => {
+    const columns = this.getColumnIndices()
+    return (
+      <div style={styles.stepContainer}>
+          {columns.map(this.renderStepsColumn)}
+      </div>
+    )
+  }
+
+// [ {parent_id: '', children: [children_ids]}, ...]
+  renderStepsColumn = (index) => {
+    const steps = this.collectSteps(index)
     console.log('steps column', steps)
     return (
-      <InfiniteScroll dataLength={steps.length} height={responsiveHeight(98)} style={styles.scroll}>
+      <InfiniteScroll key={String(index)} dataLength={steps.length} height={responsiveHeight(98)} style={styles.scroll}>
         {steps.map((step) => this.renderStepsBlock(step))}
       </InfiniteScroll>
     )
@@ -190,26 +174,26 @@ class CreateInstruction extends React.Component {
 
   renderStepsBlock = ({parent_id, children}) => {
     return (
-      <div className='card' key={parent_id} style={styles.block}>
+      <div className='card my-2' key={parent_id} style={styles.block}>
         {Boolean(parent_id) && <h2 className="font-weight-normal mb-1">{this.state.steps[parent_id].title}</h2>}
         {this.state.instruction.id && (
-          <button type='button' className="btn custom-button m-5" onClick={this.addStep(parent_id)}>
+          <button type='button' className="btn custom-button mx-5 my-1" onClick={this.addStep(parent_id)}>
             Добавить шаг
           </button>
         )}
-        {children.map((id, i) => <Step key={String(i)} step={this.state.steps[id]}/>)}
+        {children.map((id, i) => <Step key={String(i)} step={this.state.steps[id]} editMode saveCallback={this.stepSaveCallback}/>)}
       </div>
     )
   }
 
   render() {
-    console.log('instruction ', this.state.instruction)
-    const columns = this.getColumnIndices()
+    console.log('steps', this.state.steps)
     return (
       <div className="container-fluid">
-        <div className="row m-2" style={styles.containerRow}>
+        <div className="row" style={styles.containerRow}>
           {this.renderInstruction()}
-          {columns.map(this.renderStepsColumn)}
+          <div style={styles.separator}/>
+          {this.renderSteps()}
         </div>
       </div>
     )
@@ -222,6 +206,17 @@ const styles = {
     justifyContent: 'space-arround',
     alignItems: 'center'
   },
+  instructionContainer: {
+    maxWidth: '30%',
+    maxHeight: '95%',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  stepContainer: {
+    display: 'flex',
+    overflowX: 'scroll',
+    width: '60%',
+  },
   instructionButtons: {
     alignItems: 'stretch',
     justifyContent: 'space-beetween'
@@ -229,12 +224,17 @@ const styles = {
   scroll: {
     alignItems: 'center',
     justifyContent: 'center',
+    marginHorizontal: 10,
   },
   block: {
     flex:1,
     selfAlign: 'center',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  separator: {
+    borderColor: 'grey',
+    borderWidth: 2
   }
 }
 

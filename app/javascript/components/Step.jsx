@@ -1,15 +1,23 @@
 import React, { Component } from 'react'
+import { update_step } from '../api'
 
 
 export default class Step extends Component {
-  state = {
-    step: {
-      parent: null,
-      title: '',
-      description: '',
-      image: '',
-      children: []
+  constructor(props) {
+    super(props)
+    //  step: { id: number, parent: null || number, title: '', description: '', image: '', children: [], ... },
+    this.state = {
+      step: {
+        title: props.step.title,
+        image: props.step.image || '',
+        description: props.step.description
+      },
+      editMode: props.editMode || false
     }
+  }
+
+  assembleStep = () => {
+    return { ...this.props.step, ...this.state.step }
   }
 
   onChange = (event) => {
@@ -17,11 +25,28 @@ export default class Step extends Component {
   }
 
   onSubmit = () => {
-    console.log('submit step')
+    this.update_step()
+  }
+
+  onBlur = () => {
+    const { step, editMode } = this.state
+    if (step.title.length === 0 || step.description.length === 0) return
+    this.update_step()
+  }
+
+  update_step = async() => {
+    const step = this.assembleStep()
+    const res = await update_step({step})
+    this.props.saveCallback && this.props.saveCallback(step)
+  }
+
+  changeEditMode = () => {
+    this.setState({ ...this.state, editMode: !this.state.editMode })
   }
 
   render() {
     const { step } = this.state
+    console.log('step', step)
     return (
       <div className="card p-2 m-2">
         <form onSubmit={this.onSubmit}>
@@ -34,6 +59,7 @@ export default class Step extends Component {
               className="form-control"
               required
               onChange={this.onChange}
+              onBlur={this.onBlur}
               value={step.title}
             />
           </div>
@@ -46,6 +72,7 @@ export default class Step extends Component {
               className="form-control"
               required
               onChange={this.onChange}
+              onBlur={this.onBlur}
               value={step.image}
             />
           </div>
@@ -57,6 +84,7 @@ export default class Step extends Component {
             rows="5"
             required
             onChange={this.onChange}
+            onBlur={this.onBlur}
             value={step.description}
           />
         </form>

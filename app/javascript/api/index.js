@@ -41,7 +41,7 @@ export const delete_instruction = async(id) => {
   }
 }
 
-export const get_instructions = () => {
+export const get_instructions = async() => {
   const url = '/api/instructions'
   try {
     const res = await fetch(url)
