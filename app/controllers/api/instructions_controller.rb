@@ -18,8 +18,7 @@ class Api::InstructionsController < ApiController
   end
 
   def show
-    instruction = Instruction.find(params[:id])
-    render json: instruction
+    render json: serialize_instruction
   end
 
   def destroy
@@ -68,5 +67,10 @@ class Api::InstructionsController < ApiController
 
   def step_params
     params[:step].permit(:parent, :title, :description, :image, :children)
+  end
+
+  def serialize_instruction
+    instruction = Instruction.find(params[:id])
+    { instruction: instruction, steps: instruction.steps }
   end
 end
