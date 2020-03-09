@@ -4,7 +4,8 @@ import { get_instruction, delete_instruction } from '../api'
 
 export default class Instruction extends Component {
   state = {
-    instruction: {}
+    instruction: {},
+    steps: {}
   }
 
   componentDidMount = () => {
@@ -14,8 +15,9 @@ export default class Instruction extends Component {
 
   getInstruction = async(id) => {
     try {
-      const instruction = await get_instruction(id)
-      this.setState({instruction})
+      const { steps, instruction } = await get_instruction(id)
+      const normalizeSteps = steps.reduce((acc, step) => ({ ...acc, [step.id]: step }), {})
+      this.setState({ instruction, steps: normalizeSteps })
     } catch (e) {
        alert('Ошибка загрузки инструкции: ' + e.message)
        this.props.history.push('/instructions')
@@ -29,6 +31,7 @@ export default class Instruction extends Component {
 
   renderInstructionHeader = () => {
     const { instruction } = this.state
+    console.log('state', this.state)
     return (
       <div className="">
         <div className="hero position-relative d-flex align-items-center justify-content-center">
