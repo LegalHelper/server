@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
+import { get_instruction, delete_instruction } from '../api'
 
 export default class Instruction extends Component {
   state = {
@@ -11,33 +12,19 @@ export default class Instruction extends Component {
     this.getInstruction(id)
   }
 
-   getInstruction = async(id) => {
-     const url = `/api/instructions/${id}`
-
-     try {
-       const response = await fetch(url)
-       if (response.ok) {
-         const data = await response.json()
-         this.setState({instruction: data})
-       } else {
-         alert('Ошибка HTTP: ' + response.status)
-         this.props.history.push('/instructions')
-       }
-     } catch (err) {
-       console.log(err)
+  getInstruction = async(id) => {
+    try {
+      const instruction = await get_instruction(id)
+      this.setState({instruction})
+    } catch (e) {
+       alert('Ошибка загрузки инструкции: ' + e.message)
        this.props.history.push('/instructions')
-     }
-   }
+    }
+  }
 
-   deleteInstruction = (id) => async() => {
-     const url = `/api/instructions/${id}`
-     const token = document.querySelector('meta[name="csrf-token"]').content;
-     try {
-       const res = await fetch(url, { method: 'DELETE', headers: { "X-CSRF-Token": token } })
-       this.props.history.push('/instructions')
-     } catch(err) {
-       console.log(err)
-     }
+  deleteInstruction = (id) => async() => {
+    await delete_instruction(id)
+    this.props.history.push('/instructions')
    }
 
   renderInstructionHeader = () => {

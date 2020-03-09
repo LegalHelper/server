@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
+import { get_instructions } from '../api'
 
 export default class ListInstructions extends Component {
   state = {
@@ -11,18 +12,11 @@ export default class ListInstructions extends Component {
   }
 
   getInstructions = async() => {
-    const url = '/api/instructions'
     try {
-      const response = await fetch(url)
-      if (response.ok) {
-        const data = await response.json()
-        this.setState({instructions: data})
-      } else {
-        alert("Ошибка HTTP: " + response.status)
-        this.props.history.push("/")
-      }
-    } catch(err) {
-      console.log(err)
+      const instructions = await get_instructions()
+      this.setState({instructions})
+    } catch(e) {
+      alert("Ошибка загрузки инструкций: " + e.message)
       this.props.history.push("/")
     }
   }
