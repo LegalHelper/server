@@ -3,7 +3,7 @@ Rails.application.routes.draw do
     resources :instructions
     post '/instructions/:id/create_step' => 'instructions#create_step'
     post '/instructions/update_step' => 'instructions#update_step'
-    delete '/instructions/delete_step' => 'instructions#delete_step'
+    post '/instructions/delete_step' => 'instructions#delete_step'
   end
 
   root 'homepage#index'

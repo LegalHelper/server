@@ -88,3 +88,21 @@ export const update_step = async(body) => {
     throw e
   }
 }
+
+export const delete_step = async(id) => {
+  const url = '/api/instructions/delete_step'
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({id})
+    })
+    if (res.ok) return await res.json()
+    throw new Error(`Res status: ${res.status}`)
+  } catch(e) {
+    console.log('Error: Delete Step:', e.message)
+    throw e
+  }
+}

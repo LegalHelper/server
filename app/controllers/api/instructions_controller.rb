@@ -56,7 +56,8 @@ class Api::InstructionsController < ApiController
   end
 
   def delete_step
-    status :ok
+    delete_step_tree(params[:id])
+    render json: { message: "Step with id #{params[:id]} deleted." }
   end
 
   private
@@ -72,5 +73,12 @@ class Api::InstructionsController < ApiController
   def serialize_instruction
     instruction = Instruction.find(params[:id])
     { instruction: instruction, steps: instruction.steps }
+  end
+
+  def delete_step_tree(parent_id)
+    step = Step.find(parent_id).destroy!
+    Rails.logger.info("step ---- #{step}")
+    return if step.children&.empty?
+    step.children.each{ |id| delete_step_tree(id) }
   end
 end
