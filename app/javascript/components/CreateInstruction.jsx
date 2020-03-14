@@ -1,7 +1,7 @@
 import React from "react"
 import { Link } from "react-router-dom"
 import InfiniteScroll from 'react-infinite-scroll-component'
-import Step from './Step'
+import Step from './common/Step'
 import { responsiveHeight } from '../utils'
 import produce from 'immer'
 import { create_instruction, create_step } from '../api'
