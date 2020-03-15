@@ -48,15 +48,24 @@ class CreateInstruction extends React.Component {
 
   renderInstruction = () => {
     return (
-      <div className="card p-2 m-3" style={styles.instructionContainer}>
-        <img
-          src={this.state.instruction.image}
-          className="card-img-top"
-          alt={`${this.state.instruction.title} image`}
-        />
-        <h2 className="font-weight-normal mb-3">
+      <div className="col-12 col-md-4 col-xl-3">
+      <div className="card p-2 mx-0 align-items-center">
+        <div className="instruction-image-container m-2">
+          {this.state.instruction.image ?
+            <img className="img-fluid rounded"
+                 src={this.state.instruction.image}
+                 alt={`${this.state.instruction.title} image`}
+            /> :
+            <img className="rounded"
+                 src={"/assets/add_image.png"}
+                 style={{opacity: 0.5, tintColor: 'grey', maxWidth: '100%'}}
+                 alt={`${this.state.instruction.title} image`}
+            />
+          }
+        </div>
+        <h3 className="font-weight-normal mb-3">
            Описание инструкции:
-        </h2>
+        </h3>
         <form onSubmit={this.onSubmit}>
           <div className="form-group">
             <label htmlFor="instructionTitle">Название инструкции:</label>
@@ -101,7 +110,7 @@ class CreateInstruction extends React.Component {
             required
             onChange={this.onChangeInstruction}
           />
-          <div style={styles.instructionButtons}>
+          <div className="d-flex">
             <Link to="/instructions" className="btn btn-link mt-3">
               Назад к списку
             </Link>
@@ -110,6 +119,7 @@ class CreateInstruction extends React.Component {
             </button>
           </div>
         </form>
+      </div>
       </div>
     )
   }
@@ -155,7 +165,7 @@ class CreateInstruction extends React.Component {
   renderSteps = () => {
     const columns = this.getColumnIndices()
     return (
-      <div style={styles.stepContainer}>
+      <div className="col-12 col-md-8 col-xl-9 horizontal-scroll">
           {columns.map(this.renderStepsColumn)}
       </div>
     )
@@ -166,7 +176,10 @@ class CreateInstruction extends React.Component {
     const steps = this.collectSteps(index)
     console.log('steps column', steps)
     return (
-      <InfiniteScroll key={String(index)} dataLength={steps.length} height={responsiveHeight(98)} style={styles.scroll}>
+      <InfiniteScroll key={String(index)}
+                      className="mx-2 align-items-center justify-content-center"
+                      dataLength={steps.length}
+                      height={responsiveHeight(98)}>
         {steps.map((step) => this.renderStepsBlock(step))}
       </InfiniteScroll>
     )
@@ -174,14 +187,19 @@ class CreateInstruction extends React.Component {
 
   renderStepsBlock = ({parent_id, children}) => {
     return (
-      <div className='card my-2' key={parent_id} style={styles.block}>
+      <div key={parent_id} className='card my-4 align-items-center'>
         {Boolean(parent_id) && <h2 className="font-weight-normal mb-1">{this.state.steps[parent_id].title}</h2>}
         {this.state.instruction.id && (
           <button type='button' className="btn custom-button mx-5 my-1" onClick={this.addStep(parent_id)}>
             Добавить шаг
           </button>
         )}
-        {children.map((id, i) => <Step key={String(i)} step={this.state.steps[id]} editMode saveCallback={this.stepSaveCallback}/>)}
+        {children.map((id, i) => <Step key={String(i)}
+                                       step={this.state.steps[id]}
+                                       editMode
+                                       autoSave
+                                       saveCallback={this.stepSaveCallback}
+                                  />)}
       </div>
     )
   }
@@ -190,51 +208,12 @@ class CreateInstruction extends React.Component {
     console.log('steps', this.state.steps)
     return (
       <div className="container-fluid">
-        <div className="row" style={styles.containerRow}>
+        <div className="row align-items-center">
           {this.renderInstruction()}
-          <div style={styles.separator}/>
           {this.renderSteps()}
         </div>
       </div>
     )
-  }
-}
-
-
-const styles = {
-  containerRow: {
-    justifyContent: 'space-arround',
-    alignItems: 'center'
-  },
-  instructionContainer: {
-    maxWidth: '30%',
-    maxHeight: '95%',
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  stepContainer: {
-    display: 'flex',
-    overflowX: 'scroll',
-    width: '60%',
-  },
-  instructionButtons: {
-    alignItems: 'stretch',
-    justifyContent: 'space-beetween'
-  },
-  scroll: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginHorizontal: 10,
-  },
-  block: {
-    flex:1,
-    selfAlign: 'center',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  separator: {
-    borderColor: 'grey',
-    borderWidth: 2
   }
 }
 
