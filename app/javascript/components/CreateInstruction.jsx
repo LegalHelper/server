@@ -176,10 +176,8 @@ class CreateInstruction extends React.Component {
     const steps = this.collectSteps(index)
     console.log('steps column', steps)
     return (
-      <InfiniteScroll key={String(index)}
-                      className="mx-2 align-items-center justify-content-center"
-                      dataLength={steps.length}
-                      height={responsiveHeight(98)}>
+      <InfiniteScroll key={String(index)} className="mx-2 align-items-center justify-content-center"
+                      dataLength={steps.length} height={responsiveHeight(98)}>
         {steps.map((step) => this.renderStepsBlock(step))}
       </InfiniteScroll>
     )
@@ -194,12 +192,8 @@ class CreateInstruction extends React.Component {
             Добавить шаг
           </button>
         )}
-        {children.map((id, i) => <Step key={String(i)}
-                                       step={this.state.steps[id]}
-                                       editMode
-                                       autoSave
-                                       saveCallback={this.stepSaveCallback}
-                                  />)}
+        {children.map((id, i) => <Step key={String(i)} step={this.state.steps[id]}
+                                       editMode autoSave saveCallback={this.stepSaveCallback}/>)}
       </div>
     )
   }
