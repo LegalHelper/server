@@ -27,7 +27,7 @@ export default class Step extends Component {
 
   onBlur = () => {
     const { autoSave } = this.props
-    const { step, editMode } = this.state
+    const { step } = this.state
     if (!autoSave || step.title.length === 0 || step.description.length === 0) return
     this.updateStep()
   }

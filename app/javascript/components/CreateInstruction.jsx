@@ -2,34 +2,22 @@ import React from "react"
 import { Link } from "react-router-dom"
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Step from './common/Step'
+import Instruction from './common/Instruction'
 import { responsiveHeight } from '../utils'
 import produce from 'immer'
-import { create_instruction, create_step } from '../api'
+import { create_step } from '../api'
 
 class CreateInstruction extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      instruction: {
-        title: '',
-        instruction_type: '',
-        image:'',
-        description: '',
-      },
+      instruction: {},
       steps: {}
     }
-    //this.stripHtmlEntities = this.stripHtmlEntities.bind(this)
   }
 
-  onChangeInstruction = (event) => {
-    this.setState({ instruction: { ...this.state.instruction, [event.target.name]: event.target.value } })
-  }
-
-  onSubmit = async(event) => {
-    event.preventDefault()
-    const body = { instruction: this.state.instruction }
-    const instruction = await create_instruction(body)
-    this.setState({...this.state, instruction})
+  instructionCallback = (instruction) => {
+    this.setState({instruction})
   }
 
   addStep = (parent_id) => async() => {
@@ -44,84 +32,6 @@ class CreateInstruction extends React.Component {
       }
       return draft
     }))
-  }
-
-  renderInstruction = () => {
-    return (
-      <div className="col-12 col-md-4 col-xl-3">
-      <div className="card p-2 mx-0 align-items-center">
-        <div className="instruction-image-container m-2">
-          {this.state.instruction.image ?
-            <img className="img-fluid rounded"
-                 src={this.state.instruction.image}
-                 alt={`${this.state.instruction.title} image`}
-            /> :
-            <img className="rounded"
-                 src={"/assets/add_image.png"}
-                 style={{opacity: 0.5, tintColor: 'grey', maxWidth: '100%'}}
-                 alt={`${this.state.instruction.title} image`}
-            />
-          }
-        </div>
-        <h3 className="font-weight-normal mb-3">
-           Описание инструкции:
-        </h3>
-        <form onSubmit={this.onSubmit}>
-          <div className="form-group">
-            <label htmlFor="instructionTitle">Название инструкции:</label>
-            <input
-              type="text"
-              name="title"
-              id="instructionTitle"
-              className="form-control"
-              required
-              onChange={this.onChangeInstruction}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="instruction_type">Тип инструкции:</label>
-            <select className="form-control"
-                    name="instruction_type"
-                    id="instruction_type"
-                    required
-                    onChange={this.onChangeInstruction}
-            >
-              <option value="interactive">Интерактивная инструкция</option>
-              <option value="base_instruction">Базовая инструкция</option>
-            </select>
-          </div>
-          <div className="form-group">
-            <label htmlFor="instructionImage">Ссылка на картинку к инструкции:</label>
-            <input
-              type="text"
-              name="image"
-              id="instructionImage"
-              className="form-control"
-              required
-              onChange={this.onChangeInstruction}
-            />
-          </div>
-          <label htmlFor="description">Описание инструкции:</label>
-          <textarea
-            className="form-control"
-            id="description"
-            name="description"
-            rows="8"
-            required
-            onChange={this.onChangeInstruction}
-          />
-          <div className="d-flex">
-            <Link to="/instructions" className="btn btn-link mt-3">
-              Назад к списку
-            </Link>
-            <button type='submit' className="btn custom-button mt-3">
-              Создать инструкцию
-            </button>
-          </div>
-        </form>
-      </div>
-      </div>
-    )
   }
 
   getTreeDeep = () => {
@@ -174,7 +84,6 @@ class CreateInstruction extends React.Component {
 // [ {parent_id: '', children: [children_ids]}, ...]
   renderStepsColumn = (index) => {
     const steps = this.collectSteps(index)
-    console.log('steps column', steps)
     return (
       <InfiniteScroll key={String(index)} className="mx-2 align-items-center justify-content-center"
                       dataLength={steps.length} height={responsiveHeight(98)}>
@@ -199,11 +108,10 @@ class CreateInstruction extends React.Component {
   }
 
   render() {
-    console.log('steps', this.state.steps)
     return (
       <div className="container-fluid">
         <div className="row align-items-center">
-          {this.renderInstruction()}
+          <Instruction editMode saveCallback={this.instructionCallback} />
           {this.renderSteps()}
         </div>
       </div>
