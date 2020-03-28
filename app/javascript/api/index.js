@@ -29,6 +29,24 @@ export const create_instruction = async(body) => {
   }
 }
 
+export const update_instruction = async(id, body) => {
+  const url = `/api/instructions/${id}`
+  try {
+    const res = await fetch(url, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(body)
+    })
+    if (res.ok) return await res.json()
+    throw new Error(`Res status: ${res.status}`)
+  } catch(e) {
+    console.log('Error: Update Instruction:', e.message)
+    throw e
+  }
+}
+
 export const delete_instruction = async(id) => {
   const url = `/api/instructions/${id}`
   try {
