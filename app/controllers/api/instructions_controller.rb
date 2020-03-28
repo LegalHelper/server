@@ -12,6 +12,16 @@ class Api::InstructionsController < ApiController
     end
   end
 
+  def update
+    instruction = Instruction.find(params[:id])
+    instruction.update! instruction_params
+    if instruction
+      render json: instruction
+    else
+      render json: instruction.errors
+    end
+  end
+
   def index
     instructions = Instruction.all.order(created_at: :desc)
     render json: instructions
