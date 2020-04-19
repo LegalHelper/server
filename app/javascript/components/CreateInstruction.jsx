@@ -72,6 +72,18 @@ class CreateInstruction extends React.Component {
     }))
   }
 
+  stepDeleteCallback = (id) => {
+    const mutableDeleteTreeSteps = (id, steps) => {
+      const step = steps[id]
+      delete steps[id]
+      step.children.map((id) => mutableDeleteTreeSteps(id, steps))
+    }
+    this.setState(produce((draft) => {
+      mutableDeleteTreeSteps(id, draft.steps)
+      return draft
+    }))
+  }
+
   renderSteps = () => {
     const columns = this.getColumnIndices()
     return (
@@ -101,8 +113,8 @@ class CreateInstruction extends React.Component {
             Добавить шаг
           </button>
         )}
-        {children.map((id, i) => <Step key={String(i)} step={this.state.steps[id]}
-                                       editMode autoSave saveCallback={this.stepSaveCallback}/>)}
+        {children.map((id, i) => <Step key={String(i)} step={this.state.steps[id]} editMode autoSave
+                                    saveCallback={this.stepSaveCallback} deleteCallback={this.stepDeleteCallback}/>)}
       </div>
     )
   }

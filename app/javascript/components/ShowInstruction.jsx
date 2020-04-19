@@ -93,6 +93,18 @@ class ShowInstruction extends React.Component {
     }))
   }
 
+  stepDeleteCallback = (id) => {
+    const mutableDeleteTreeSteps = (id, steps) => {
+      const step = steps[id]
+      delete steps[id]
+      step.children.map((id) => mutableDeleteTreeSteps(id, steps))
+    }
+    this.setState(produce((draft) => {
+      mutableDeleteTreeSteps(id, draft.steps)
+      return draft
+    }))
+  }
+
   renderSteps = () => {
     const columns = this.getColumnIndices()
     return (
@@ -123,12 +135,13 @@ class ShowInstruction extends React.Component {
           </button>
         )}
         {children.map((id, i) => <Step key={String(i)} step={this.state.steps[id]} withButtons
-                                         saveCallback={this.stepSaveCallback} deleteCallback={() => {}}/>)}
+                                    saveCallback={this.stepSaveCallback} deleteCallback={this.stepDeleteCallback}/>)}
       </div>
     )
   }
 
   render() {
+    console.log('state steps in render', this.state.steps)
     const { instruction } = this.state
     return (
       <div className="container-fluid">
