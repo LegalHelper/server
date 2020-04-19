@@ -44,10 +44,14 @@ export default class Step extends Component {
 
   deleteStep = async() => {
     const { id } = this.props.step
-    const text = 'Внимание! При удалении шага, так же будут удалены все его дочерние шаги.'
+    const text = 'Внимание! При удалении шага, так же будут удалены все его дочерние шаги. Удалить?'
     if (confirm(text)) {
-      res = await delete_step(id)
-      this.props.deleteCallBack && this.props.deleteCallBack(id)
+      try {
+        await delete_step(id)
+        this.props.deleteCallback && this.props.deleteCallback(id)
+      } catch(e) {
+        alert("Не получилось удалить шаг, попробуйте обновить страницу: " + e.message)
+      }
     }
   }
 
@@ -101,7 +105,7 @@ export default class Step extends Component {
         { withButtons && this.renderButtons() }
         <form onSubmit={this.updateStep}>
           <div className="form-group">
-            <label htmlFor="instructionTitle">Название шага:</label>
+            <label htmlFor="instructionTitle">Название шага (что ответили):</label>
             <input
               type="text"
               name="title"
@@ -126,7 +130,7 @@ export default class Step extends Component {
               value={step.image}
             />
           </div>
-          <label htmlFor="description">Описание шага:</label>
+          <label htmlFor="description">Описание шага (что делать сейчас):</label>
           <textarea
             className="form-control"
             id="description"
