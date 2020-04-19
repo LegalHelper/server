@@ -43,7 +43,7 @@ export default class Instruction extends Component {
         <div className="col-12 col-md-4 col-xl-3">
         <div className="card p-2 mx-0 align-items-center">
           <div className="instruction-image-container m-2">
-            {instruction.image ?
+            {instruction.image && instruction.image.startsWith('http') ?
               <img className="img-fluid rounded"
                    src={instruction.image}
                    alt={`${instruction.title} image`}
